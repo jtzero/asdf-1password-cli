@@ -1,11 +1,11 @@
-**asdf-1password**—_1password plugin for [asdf version manager](https://asdf-vm.com)_
+**asdf-1password-cli**—_1password-cli plugin for [asdf version manager](https://asdf-vm.com)_
 
-[![Build Status](https://github.com/samtgarson/asdf-1password/workflows/CI/badge.svg)](https://github.com/samtgarson/asdf-1password/actions)
+[![Build Status](https://github.com/samtgarson/asdf-1password/workflows/CI/badge.svg)](https://github.com/jtzero/asdf-1password-cli/actions)
 
 ## Install
 
 ```
-asdf plugin-add 1password https://github.com/samtgarson/asdf-1password.git
+asdf plugin-add 1password https://github.com/jtzero/asdf-1password-cli.git
 ```
 
 ## Requirements
@@ -14,9 +14,6 @@ This plugin requires the `unzip` utility:
 
 #### Linux
 `apt-get install unzip`
-
-#### OSX
-`brew install unzip`
 
 ## Use
 
