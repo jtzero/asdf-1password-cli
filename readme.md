@@ -1,4 +1,4 @@
-**asdf-1password-cli**—_1password-cli plugin for [asdf version manager](https://asdf-vm.com)_
+**asdf-1password-cli**—_[1password-cli](https://1password.com/downloads/command-line/) plugin for [asdf version manager](https://asdf-vm.com)_
 
 [![Build Status](https://github.com/samtgarson/asdf-1password/workflows/CI/badge.svg)](https://github.com/jtzero/asdf-1password-cli/actions)
 
