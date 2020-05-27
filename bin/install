@@ -21,10 +21,37 @@ install_op() {
   local version=$2
   local install_path=$3
   local bin_install_path="$install_path/bin"
-  local download_url="$(get_download_url $version)"
+  local platform="$(get_arch)"
+  local download_url="$(get_download_url $version $platform)"
 
   mkdir -p "${bin_install_path}"
 
+  if [ "${platform}" = 'darwin' ]; then
+    darwin_install "${bin_install_path}" "${download_url}"
+  else
+    all_else_install "${bin_install_path}" "${download_url}"
+  fi
+}
+
+darwin_install() {
+  local bin_install_path="${1}"
+  local download_url="${2}"
+  local bin_path="${bin_install_path}/op"
+  echo "Downloading op from ${download_url}"
+
+  local tmp_dir="$(mktemp -d)"
+  local pkg_path="${tmp_dir}/op.pkg"
+  successfully curl -s "$download_url" -o "${pkg_path}"
+
+  sudo installer -pkg "${pkg_path}" -target /
+  # lame
+  mv "$(which op)" "${bin_path}"
+}
+
+all_else_install() {
+  local bin_install_path="${1}"
+  local download_url="${2}"
+  local bin_path="${bin_install_path}/op"
   local bin_path="${bin_install_path}/op"
   local zip_path="${bin_install_path}/op.zip"
   local sig_path="${bin_install_path}/op.sig"
@@ -42,8 +69,12 @@ get_arch() {
 
 get_download_url() {
   local version="$1"
-  local platform="$(get_arch)"
-  echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.zip"
+  local platform="$2"
+  if [ "${platform}" = "darwin" ]; then
+    echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.pkg"
+  else
+    echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.zip"
+  fi
 }
 
 install_op $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
