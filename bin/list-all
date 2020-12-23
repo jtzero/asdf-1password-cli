@@ -3,5 +3,6 @@
 echo $(
   curl -s https://app-updates.agilebits.com/product_history/CLI \
     | sed -n '/<h3/{n;p;}' \
-    | sed 's/^[ \t]*//'
+    | sed 's/^[ \t]*//' \
+    | sort -V
 )
