@@ -64,7 +64,7 @@ all_else_install() {
   local -r group_name="onepassword-cli"
   # https://1password.community/discussion/comment/657013/#Comment_657013
   if ! grep -q -E "^${group_name}:" /etc/group; then
-    if [ "${CI}" = "true" ] || [ "${yn}" = "y" ]; then
+    if [ "${CI}" = "true" ]; then
       sudo groupadd "${group_name}"
     else
       read -rp "'${group_name}' group needs created to run this program, continue? (y/n): " yn
