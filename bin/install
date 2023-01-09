@@ -41,11 +41,11 @@ darwin_install() {
 
   local tmp_dir="$(mktemp -d)"
   local pkg_path="${tmp_dir}/op.pkg"
-  successfully curl -s "$download_url" -o "${pkg_path}"
+  successfully curl --fail-with-body -s "$download_url" -o "${pkg_path}"
 
   sudo installer -pkg "${pkg_path}" -target /
   # lame
-  mv "$(which op)" "${bin_path}"
+  sudo mv "$(which op)" "${bin_path}"
 }
 
 all_else_install() {
@@ -57,7 +57,7 @@ all_else_install() {
   local sig_path="${bin_install_path}/op.sig"
   echo "Downloading op from ${download_url}"
 
-  successfully curl -s "$download_url" -o "$zip_path"
+  successfully curl --fail-with-body -s "$download_url" -o "$zip_path"
   successfully unzip $zip_path -d $bin_install_path
   rm $zip_path $sig_path
   chmod +x $bin_path
@@ -67,13 +67,42 @@ get_arch() {
   uname | tr '[:upper:]' '[:lower:]'
 }
 
+semver_compare() {
+  local -r a="${1}"
+  local -r b="${2}"
+
+  if [[ "${a}" = "${b}" ]]; then
+    printf 0
+  else
+    local -r largest_version="$(printf "%s\n%s" "${a}" "${b}" | sort -V | tail -n 1)"
+
+    if [[ "${a}" = "${largest_version}" ]]; then
+      printf 1
+    else
+      printf -1
+    fi
+  fi
+}
+
+MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
+
 get_download_url() {
   local version="$1"
   local platform="$2"
+  local -r major="$(cut -d'.' -f1 <<< "${version}")"
+  local major_string="2"
+  if [ "${major}" = "1" ]; then
+    major_string=""
+  fi
   if [ "${platform}" = "darwin" ]; then
-    echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.pkg"
+    local -r comparison="$(semver_compare "${version}" "${MAC_OS_SWITCH_TO_UNIVERSAL}")"
+    if [ "${comparison}" = "0" ] || [ "${comparison}" = "-1" ]; then
+      echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.pkg"
+    else
+      echo "https://cache.agilebits.com/dist/1P/op${major_string}/pkg/v${version}/op_apple_universal_v${version}.pkg"
+    fi
   else
-    echo "https://cache.agilebits.com/dist/1P/op/pkg/v${version}/op_${platform}_amd64_v${version}.zip"
+    echo "https://cache.agilebits.com/dist/1P/op${major_string}/pkg/v${version}/op_${platform}_amd64_v${version}.zip"
   fi
 }
 
