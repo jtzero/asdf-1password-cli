@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+CI="${CI:-false}"
 TMPDIR=${TMPDIR:-/tmp}
 MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
 (which unzip >/dev/null) || (echo >&2 'unzip is needed to install 1password' && exit 1)
@@ -62,12 +63,16 @@ all_else_install() {
   rm "${zip_path}" "${sig_path}"
   local -r group_name="onepassword-cli"
   # https://1password.community/discussion/comment/657013/#Comment_657013
-  if grep -q -E "^${group_name}:" /etc/group; then
-    read -p "'${group_name}' group needs created to run this program, continue? (y/n): " yn
-    if [ "${yn}" = "y" ]; then
+  if ! grep -q -E "^${group_name}:" /etc/group; then
+    if [ "${CI}" = "true" ] || [ "${yn}" = "y" ]; then
       sudo groupadd "${group_name}"
     else
-      fail "cannot create '${group_name}' group install cannot continue"
+      read -rp "'${group_name}' group needs created to run this program, continue? (y/n): " yn
+      if [ "${yn}" = "y" ]; then
+        sudo groupadd "${group_name}"
+      else
+        fail "cannot create '${group_name}' group install cannot continue"
+      fi
     fi
   fi
   chgrp onepassword-cli "${bin_path}"
