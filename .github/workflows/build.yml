@@ -16,6 +16,8 @@ jobs:
           - ubuntu-latest
           - macos-latest
     runs-on: ${{ matrix.os }}
+    env:
+      ASDF_OP_DEBUG: true
     steps:
       - name: asdf_plugin_test
         uses: asdf-vm/actions/plugin-test@v1

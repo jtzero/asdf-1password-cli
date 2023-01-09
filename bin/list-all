@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 echo $(
   curl -s https://app-updates.agilebits.com/product_history/CLI |
     sed -n '/<h3/{n;p;}' |
