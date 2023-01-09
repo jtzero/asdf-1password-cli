@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 echo $(
-  curl -s https://app-updates.agilebits.com/product_history/CLI \
-    | sed -n '/<h3/{n;p;}' \
-    | sed 's/^[ \t]*//' \
-    | sort -V && \
-  curl -s https://app-updates.agilebits.com/product_history/CLI2 \
-    | sed -n '/<h3/{n;p;}' \
-    | sed 's/^[ \t]*//' \
-    | sort -V
+  curl -s https://app-updates.agilebits.com/product_history/CLI |
+    sed -n '/<h3/{n;p;}' |
+    sed 's/^[ \t]*//' |
+    sort -V &&
+    curl -s https://app-updates.agilebits.com/product_history/CLI2 |
+    sed -n '/<h3/{n;p;}' |
+      sed 's/^[ \t]*//' |
+      sort -V
 )

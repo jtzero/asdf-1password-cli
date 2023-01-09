@@ -5,13 +5,13 @@ set -o pipefail
 
 ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
 TMPDIR=${TMPDIR:-/tmp}
-[ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
-(which unzip >/dev/null) || (>&2 echo 'unzip is needed to install 1password' && exit 1)
+MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
+[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
+[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
+(which unzip >/dev/null) || (echo >&2 'unzip is needed to install 1password' && exit 1)
 
 successfully() {
-  $*
-  if [[ $? != 0 ]]; then
+  if   $* ; then
     exit 1
   fi
 }
@@ -21,8 +21,8 @@ install_version() {
   local version=$2
   local install_path=$3
   local bin_install_path="$install_path/bin"
-  local platform="$(get_arch)"
-  local download_url="$(get_download_url $version $platform)"
+  local -r platform="$(get_arch)"
+  local -r download_url="$(get_download_url "${version}" "${platform}")"
 
   mkdir -p "${bin_install_path}"
 
@@ -58,9 +58,9 @@ all_else_install() {
   echo "Downloading op from ${download_url}"
 
   successfully curl --fail-with-body -s "$download_url" -o "$zip_path"
-  successfully unzip $zip_path -d $bin_install_path
-  rm $zip_path $sig_path
-  chmod +x $bin_path
+  successfully unzip "${zip_path}" -d "${bin_install_path}"
+  rm "${zip_path}" "${sig_path}"
+  chmod +x "${bin_path}"
 }
 
 get_arch() {
@@ -84,12 +84,10 @@ semver_compare() {
   fi
 }
 
-MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
-
 get_download_url() {
   local version="$1"
   local platform="$2"
-  local -r major="$(cut -d'.' -f1 <<< "${version}")"
+  local -r major="$(cut -d'.' -f1 <<<"${version}")"
   local major_string="2"
   if [ "${major}" = "1" ]; then
     major_string=""
