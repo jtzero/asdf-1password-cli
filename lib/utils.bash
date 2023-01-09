@@ -8,25 +8,8 @@ MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
 TOOL_NAME='1password-cli'
 
 successfully() {
-  if ! $* ; then
+  if ! "$@"; then
     exit 1
-  fi
-}
-
-install_version() {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
-  local bin_install_path="$install_path/bin"
-  local -r platform="$(get_arch)"
-  local -r download_url="$(get_download_url "${version}" "${platform}")"
-
-  mkdir -p "${bin_install_path}"
-
-  if [ "${platform}" = 'darwin' ]; then
-    darwin_install "${bin_install_path}" "${download_url}"
-  else
-    all_else_install "${bin_install_path}" "${download_url}"
   fi
 }
 
@@ -76,7 +59,7 @@ all_else_install() {
     fi
   fi
   chgrp onepassword-cli "${bin_path}"
-  chmod g+s  "${bin_path}"
+  chmod g+s "${bin_path}"
   chmod +x "${bin_path}"
 }
 
@@ -101,6 +84,15 @@ semver_compare() {
   fi
 }
 
+list_all_versions() {
+  curl -s https://app-updates.agilebits.com/product_history/CLI | sed -n '/<h3/{n;p;}' | sed 's/^[ \t]*//' &&
+    curl -s https://app-updates.agilebits.com/product_history/CLI2 | sed -n '/<h3/{n;p;}' | sed 's/^[ \t]*//'
+}
+
+sort_versions() {
+  sort -V
+}
+
 get_download_url() {
   local version="$1"
   local platform="$2"
@@ -118,5 +110,22 @@ get_download_url() {
     fi
   else
     echo "https://cache.agilebits.com/dist/1P/op${major_string}/pkg/v${version}/op_${platform}_amd64_v${version}.zip"
+  fi
+}
+
+install_version() {
+  local install_type="${1}"
+  local -r version="${2}"
+  local install_path="${3}"
+  local bin_install_path="$install_path/bin"
+  local -r platform="$(get_arch)"
+  local -r download_url="$(get_download_url "${version}" "${platform}")"
+
+  mkdir -p "${bin_install_path}"
+
+  if [ "${platform}" = 'darwin' ]; then
+    darwin_install "${bin_install_path}" "${download_url}"
+  else
+    all_else_install "${bin_install_path}" "${download_url}"
   fi
 }
