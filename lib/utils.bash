@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-set -o pipefail
-
 ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
 TMPDIR=${TMPDIR:-/tmp}
 MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
@@ -13,7 +10,7 @@ MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
 TOOL_NAME='1password-cli'
 
 successfully() {
-  if   $* ; then
+  if $* ; then
     exit 1
   fi
 }

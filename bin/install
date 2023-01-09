@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -e
+set -o pipefail
+
+#set -euo pipefail
+
+if [ "${ASDF_OP_DEBUG:-}" = 'true' ]; then
+  set -x
+fi
 
 current_script_path=${BASH_SOURCE[0]}
 plugin_dir=$(dirname "$(dirname "$current_script_path")")
@@ -9,3 +16,7 @@ plugin_dir=$(dirname "$(dirname "$current_script_path")")
 source "${plugin_dir}/lib/utils.bash"
 
 install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+
+if [ "${ASDF_OP_DEBUG:-}" = 'true' ]; then
+  set +x
+fi
