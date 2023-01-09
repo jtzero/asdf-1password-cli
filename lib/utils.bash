@@ -10,6 +10,8 @@ MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
 [ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
 (which unzip >/dev/null) || (echo >&2 'unzip is needed to install 1password' && exit 1)
 
+TOOL_NAME='1password-cli'
+
 successfully() {
   if   $* ; then
     exit 1
@@ -48,6 +50,11 @@ darwin_install() {
   sudo mv "$(which op)" "${bin_path}"
 }
 
+fail() {
+  echo -e "asdf-$TOOL_NAME: $*"
+  exit 1
+}
+
 all_else_install() {
   local bin_install_path="${1}"
   local download_url="${2}"
@@ -60,6 +67,18 @@ all_else_install() {
   successfully curl --fail-with-body -s "$download_url" -o "$zip_path"
   successfully unzip "${zip_path}" -d "${bin_install_path}"
   rm "${zip_path}" "${sig_path}"
+  local -r group_name="onepassword-cli"
+  # https://1password.community/discussion/comment/657013/#Comment_657013
+  if grep -q -E "^${group_name}:" /etc/group; then
+    read -p "'${group_name}' group needs created to run this program, continue? (y/n): " yn
+    if [ "${yn}" = "y" ]; then
+      sudo groupadd "${group_name}"
+    else
+      fail "cannot create '${group_name}' group install cannot continue"
+    fi
+  fi
+  chgrp onepassword-cli "${bin_path}"
+  chmod g+s  "${bin_path}"
   chmod +x "${bin_path}"
 }
 
