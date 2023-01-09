@@ -3,7 +3,7 @@
 # asdf-1password-cli [![Build](https://github.com/jtzero/asdf-1password-cli/actions/workflows/build.yml/badge.svg)](https://github.com/jtzero/asdf-1password-cli/actions/workflows/build.yml) [![Lint](https://github.com/jtzero/asdf-1password-cli/actions/workflows/lint.yml/badge.svg)](https://github.com/jtzero/asdf-1password-cli/actions/workflows/lint.yml)
 
 
-[1password-cli](https://github.com/1password-cli/1password-cli.git) plugin for the [asdf version manager](https://asdf-vm.com).
+[1password-cli](https://1password.com/downloads/command-line/) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -37,7 +37,7 @@ asdf install 1password-cli latest
 asdf global 1password-cli latest
 
 # Now 1password-cli commands are available
-1password-cli --version
+op --version
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
