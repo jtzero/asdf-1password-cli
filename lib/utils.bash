@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
 TMPDIR=${TMPDIR:-/tmp}
 MAC_OS_SWITCH_TO_UNIVERSAL='1.11.1'
-[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
 (which unzip >/dev/null) || (echo >&2 'unzip is needed to install 1password' && exit 1)
 
 TOOL_NAME='1password-cli'
 
 successfully() {
-  if $* ; then
+  if ! $* ; then
     exit 1
   fi
 }
@@ -55,7 +52,6 @@ fail() {
 all_else_install() {
   local bin_install_path="${1}"
   local download_url="${2}"
-  local bin_path="${bin_install_path}/op"
   local bin_path="${bin_install_path}/op"
   local zip_path="${bin_install_path}/op.zip"
   local sig_path="${bin_install_path}/op.sig"
