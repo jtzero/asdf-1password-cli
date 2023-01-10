@@ -58,7 +58,7 @@ all_else_install() {
       fi
     fi
   fi
-  chgrp onepassword-cli "${bin_path}"
+  sudo chgrp "${group_name}" "${bin_path}"
   chmod g+s "${bin_path}"
   chmod +x "${bin_path}"
 }
