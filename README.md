@@ -19,8 +19,6 @@
 Plugin:
 
 ```shell
-asdf plugin add 1password-cli
-# or
 asdf plugin add 1password-cli https://github.com/jtzero/asdf-1password-cli.git
 ```
 
