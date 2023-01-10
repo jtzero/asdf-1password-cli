@@ -49,6 +49,7 @@ all_else_install() {
   if ! grep -q -E "^${group_name}:" /etc/group; then
     if [ "${CI}" = "true" ]; then
       sudo groupadd "${group_name}"
+      sudo usermod -a -G "${group_name}" "$(whoami)"
     else
       read -rp "'${group_name}' group needs created to run this program, continue? (y/n): " yn
       if [ "${yn}" = "y" ]; then
