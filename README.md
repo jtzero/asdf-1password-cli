@@ -31,10 +31,10 @@ asdf plugin add 1password-cli https://github.com/jtzero/asdf-1password-cli.git
 asdf list-all 1password-cli
 
 # Install specific version
-asdf install 1password-cli latest
+asdf install 1password-cli $SOME_VERSION
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global 1password-cli latest
+asdf global 1password-cli $SOME_VERSION
 
 # Now 1password-cli commands are available
 op --version
